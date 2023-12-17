@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button } from 'react-bootstrap';
-import './styles.css';
-// import './App.css';
+import { Form, Button } from "react-bootstrap";
+import "./styles.css";
 
 function HomePage() {
   const url = `http://localhost:5080/api/todoitems`;
   const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [editedTitle, setEditedTitle] = useState('');
-  const [editedDescription, setEditedDescription] = useState('');
-
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedDescription, setEditedDescription] = useState("");
 
   useEffect(() => {
     getItems();
@@ -30,12 +28,11 @@ function HomePage() {
       .catch((error) => console.error("Unable to get items.", error));
   }
 
-  function addItem({ title, description}) {
-
+  function addItem({ title, description }) {
     const item = {
       isComplete: false,
       title: title,
-      description: description
+      description: description,
     };
 
     fetch(url, {
@@ -49,7 +46,7 @@ function HomePage() {
       .then((response) => response.json())
       .then(() => {
         getItems();
-        // addTitleTextbox.value = "";
+        
       })
       .catch((error) => console.error("Unable to add item.", error));
   }
@@ -62,11 +59,12 @@ function HomePage() {
       .catch((error) => console.error("Unable to delete item.", error));
   }
 
-  function updateItem(id, title, description) {
+  function updateItem(id, title, description, isComplete) {
     const item = {
       id: id,
       title: title,
-      description: description
+      description: description,
+      isComplete: isComplete,
     };
 
     fetch(`${url}/${id}`, {
@@ -88,46 +86,61 @@ function HomePage() {
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    setEditedTitle('');
-    setEditedDescription('');
+    setEditedTitle("");
+    setEditedDescription("");
   };
 
   const handleSaveEdit = () => {
     updateItem(editingId, editedTitle, editedDescription);
-    console.log(`Editing ID: ${editingId}, Title: ${editedTitle}, Description: ${editedDescription}`);
+    console.log(
+      `Editing ID: ${editingId}, Title: ${editedTitle}, Description: ${editedDescription}`
+    );
     // Clear the editing state
     setEditingId(null);
-    setEditedTitle('');
-    setEditedDescription('');
+    setEditedTitle("");
+    setEditedDescription("");
+  };
+
+  const handleCheckboxChange = (id) => {
+    updateItem(
+      id,
+      todos.find((todo) => todo.id === id).title,
+      todos.find((todo) => todo.id === id).description,
+      !todos.find((todo) => todo.id === id).isComplete
+    );
   };
 
   return (
-    <div style={{ margin: '20px' }}>
-      <h1 style={{ color: '#007BFF', marginBottom: '30px' }}>📝 To-do CRUD</h1>
+    <div style={{ margin: "20px" }}>
+      <h1 style={{ color: "#007BFF", marginBottom: "30px" }}>📝 To-do CRUD</h1>
 
-      <Form onSubmit={(e) => {
-        e.preventDefault();
-        if (editingId !== null) {
-          // Implement your logic to save the edited data, for now, let's just log it
-          console.log(`Editing ID: ${editingId}, Title: ${editedTitle}, Description: ${editedDescription}`);
-          // Clear the editing state
-          setEditingId(null);
-          setEditedTitle('');
-          setEditedDescription('');
-        } else {
-          addItem({
-            title: e.target.todoTitle.value,
-            description: e.target.todoDescription.value
-          });
-          e.target.reset(); // Clear form fields after submission
-        }
-      }}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (editingId !== null) {
+            
+            console.log(
+              `Editing ID: ${editingId}, Title: ${editedTitle}, Description: ${editedDescription}`
+            );
+            // Clear the editing state
+            setEditingId(null);
+            setEditedTitle("");
+            setEditedDescription("");
+          } else {
+            addItem({
+              title: e.target.todoTitle.value,
+              description: e.target.todoDescription.value,
+            });
+            e.target.reset(); // Clear form fields after submission
+          }
+        }}
+      >
         <Form.Group controlId="todoTitle">
           <Form.Label>Todo Title:</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter todo title"
-            style={{ borderRadius: '5px', border: '1px solid #28A745' }}
+            style={{ borderRadius: "5px", border: "1px solid #28A745" }}
             required
             value={editingId !== null ? editedTitle : undefined}
             onChange={(e) => setEditedTitle(e.target.value)}
@@ -139,7 +152,7 @@ function HomePage() {
             as="textarea"
             rows={3}
             placeholder="Enter todo description"
-            style={{ borderRadius: '5px', border: '1px solid #28A745' }}
+            style={{ borderRadius: "5px", border: "1px solid #28A745" }}
             required
             value={editingId !== null ? editedDescription : undefined}
             onChange={(e) => setEditedDescription(e.target.value)}
@@ -147,18 +160,42 @@ function HomePage() {
         </Form.Group>
         {editingId !== null ? (
           <>
-            <Button variant="success" onClick={handleSaveEdit}>Save Edit</Button>
-            <Button variant="secondary" onClick={handleCancelEdit} style={{ marginLeft: '10px' }}>Cancel Edit</Button>
+            <Button variant="success" onClick={handleSaveEdit}>
+              Save Edit
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={handleCancelEdit}
+              style={{ marginLeft: "10px" }}
+            >
+              Cancel Edit
+            </Button>
           </>
         ) : (
-          <Button variant="success" type="submit">Add Todo</Button>
+          <Button variant="success" type="submit">
+            Add Todo
+          </Button>
         )}
       </Form>
 
-      <h3 style={{ marginTop: '30px' }}>📋 Todo List</h3>
+      <h3 style={{ marginTop: "30px" }}>📋 Todo List</h3>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id} style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
+          <li
+            key={todo.id}
+            style={{
+              marginBottom: "10px",
+              padding: "10px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+            }}
+          >
+            <Form.Check
+              type="checkbox"
+              id={`checkbox-${todo.id}`}
+              checked={todo.isComplete}
+              onChange={() => handleCheckboxChange(todo.id)}
+            />
             {editingId === todo.id ? (
               <>
                 <strong>{todo.title}</strong> - {todo.description}
@@ -169,15 +206,17 @@ function HomePage() {
                 <Button
                   variant="primary"
                   size="sm"
-                  style={{ marginLeft: '10px' }}
-                  onClick={() => handleEditClick(todo.id, todo.title, todo.description)}
+                  style={{ marginLeft: "10px" }}
+                  onClick={() =>
+                    handleEditClick(todo.id, todo.title, todo.description)
+                  }
                 >
                   Edit
                 </Button>
                 <Button
                   variant="danger"
                   size="sm"
-                  style={{ marginLeft: '10px' }}
+                  style={{ marginLeft: "10px" }}
                   onClick={() => deleteItem(todo.id)}
                 >
                   Delete
@@ -190,6 +229,5 @@ function HomePage() {
     </div>
   );
 }
-
 
 export default HomePage;
