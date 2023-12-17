@@ -140,7 +140,7 @@ function HomePage() {
           <Form.Control
             type="text"
             placeholder="Enter todo title"
-            style={{ borderRadius: "5px", border: "1px solid #28A745" }}
+            style={{ borderRadius: "5px"}}
             required
             value={editingId !== null ? editedTitle : undefined}
             onChange={(e) => setEditedTitle(e.target.value)}
@@ -152,7 +152,7 @@ function HomePage() {
             as="textarea"
             rows={3}
             placeholder="Enter todo description"
-            style={{ borderRadius: "5px", border: "1px solid #28A745" }}
+            style={{ borderRadius: "5px"}}
             required
             value={editingId !== null ? editedDescription : undefined}
             onChange={(e) => setEditedDescription(e.target.value)}
