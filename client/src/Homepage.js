@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from 'react-bootstrap';
+import './styles.css';
 // import './App.css';
 
 function HomePage() {
@@ -61,7 +62,7 @@ function HomePage() {
     <div style={{ margin: '20px' }}>
       <h1 style={{ color: '#007BFF', marginBottom: '30px' }}>📝 To-do CRUD</h1>
       
-      <h3 style={{ color: '#28A745' }}>➕ Add</h3>
+      {/* <h3 style={{ color: '#28A745' }}>➕ Add</h3> */}
       <Form onSubmit={(e) => {
         e.preventDefault();
         addItem({
@@ -92,7 +93,7 @@ function HomePage() {
         <Button variant="success" type="submit">Add Todo</Button>
       </Form>
 
-      <h3 style={{ color: '#DC3545', marginTop: '30px' }}>📋 Todo List</h3>
+      <h3 style={{  marginTop: '30px' }}>📋 Todo List</h3>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id} style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}>
